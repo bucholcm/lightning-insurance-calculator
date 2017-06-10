@@ -1,0 +1,18 @@
+<project name="Salesforce task" default="deployZip" basedir="." xmlns:sf="antlib:com.salesforce">
+	<taskdef resource="com/salesforce/antlib.xml" uri="antlib:com.salesforce">
+	</taskdef>
+	<property file="build.properties"/>
+    <property name="targetDir" value="target"/>
+	<target name="deployZip">
+		<sf:deploy username="${sfdc.username}" password="${sfdc.password}" serverurl="${sfdc.serverurl}" maxPoll="${sfdc.maxPoll}" zipFile="${sfdc.zipFile}" rollbackOnError="true" />
+	</target>
+	<target name="deployCode">
+        <sf:deploy username="${sfdc.username}" password="${sfdc.password}" serverurl="${sfdc.serverurl}" maxPoll="${sfdc.maxPoll}" deployRoot="${sfdc.deployRoot}"/>
+    </target>
+    <target name="deployCodeCheckOnly">
+        <sf:deploy username="${sfdc.username}" password="${sfdc.password}" serverurl="${sfdc.serverurl}" maxPoll="${sfdc.maxPoll}" deployRoot="${sfdc.deployRoot}" rollbackOnError="true" checkOnly="true" runAllTests="true"/>
+    </target>
+    <target name="retrieveAllInPlace">
+        <sf:retrieve username="${sfdc.username}" password="${sfdc.password}" serverurl="${sfdc.serverurl}" maxPoll="${sfdc.maxPoll}" retrieveTarget="${sfdc.deployRoot}" unpackaged="${sfdc.deployRoot}/package.xml"/>
+    </target>
+</project>

@@ -1,0 +1,124 @@
+<aura:component implements="forceCommunity:availableForAllPageTypes" access="global" controller="InsuranceCalcController" >
+    <aura:attribute name="age" type="Integer" default="20"/>
+    <aura:attribute name="profit" type="Integer" default="4"/>
+    <aura:attribute name="ageRet" type="Integer" default="60"/>
+    <aura:attribute name="amount" type="Integer" default="200"/>
+    <aura:attribute name="result" type="Decimal" />
+    <aura:attribute name="capital" type="Decimal" />
+    
+    <!-- PAGE HEADER -->
+    <div class="slds-page-header" role="banner">
+        <div class="slds-grid">
+            <div class="slds-col">
+                <p class="slds-text-heading--label">Kalkulator</p>
+                <h1 class="slds-text-heading--medium">Kalkulator IKE</h1>
+            </div>
+        </div>
+    </div>
+    <!-- / PAGE HEADER -->
+    
+    <div class="slds-col slds-col--padded slds-p-top--large">
+        
+        <div aura:id="inform" aria-labelledby="newexpenseform">
+            <!-- BOXED AREA -->
+            <fieldset class="slds-box slds-theme--default slds-container--small">
+                
+                <legend id="newexpenseform" class="slds-text-heading--small slds-p-vertical--medium">
+                    Poznajmy się
+                </legend>
+                <form class="slds-form--stacked">
+                    
+                    <div class="slds-form-element slds-is-required">
+                        <div class="slds-form-element__control">
+                            <ui:inputNumber aura:id="age" label="Ile masz lat?"
+                                            class="slds-input"
+                                            labelClass="slds-form-element__label"
+                                            required="true"
+                                            value="{!v.age}" />
+                        </div>
+                    </div>
+                    
+                    <div class="slds-form-element slds-is-required">
+                        <div aura:id="ageRet_help" class="slds-popover slds-popover--tooltip slds-nubbin--bottom-right slds-hide ageRet_help" role="tooltip" aria-live="polite">
+                            <div class="slds-popover__body slds-text-longform">
+                                <p>Wypłata następuje na wniosek Oszczędzającego po osiągnięciu przez niego wieku 60 lat albo po ukończeniu 55 lat, nabyciu uprawnień emerytalnych oraz spełnieniu warunków ustawowych: dokonywania wpłat na IKE co najmniej w 5 dowolnych latach kalendarzowych albo dokonania ponad połowy wartości wpłat na IKE nie później niż na 5 lat przed dniem złożenia przez Oszczędzającego wniosku o dokonanie Wypłaty. Jeśli masz więc więcej niż 55 lat, wypłaty bez utraty ulgi podatkowej będziesz mógł dokonać później, niż w wieku 60 lat.</p>
+                            </div>
+                        </div>
+                        <div class="slds-form-element__label">
+                            <label class="slds-form-element__label" for="ageRet">W jakim wieku chcesz rozpocząć wypłacanie środków?</label>
+                        </div>
+                        <div class="slds-form-element__icon">
+                            <a id="ageRet_help_btn" onclick="{!c.handleHelp}">
+                                <div class="slds-icon-text-default" aria-hidden="true">
+                                    <lightning:icon size="x-small" title="Help" iconName="utility:info" />
+                                </div>
+                            </a>
+                        </div>
+                        <div class="slds-form-element__control">
+                            <ui:inputNumber aura:id="ageRet" required="true" value="{!v.ageRet}" />                     
+                        </div>
+                    </div>
+                    
+                    <div class="slds-form-element slds-is-required">
+                        <div class="slds-form-element__control">
+                            <ui:inputNumber aura:id="amount" label="Ile chcesz wpłacać miesięcznie na IKE?"
+                                            class="slds-input"
+                                            labelClass="slds-form-element__label"
+                                            value="{!v.amount}"
+                                            required="true"/>
+                            
+                        </div>
+                    </div>
+                    
+                    <div class="slds-form-element slds-is-required">
+                        <div aura:id="profit_help" class="slds-popover slds-popover--tooltip slds-nubbin--bottom-left slds-hide profit_help" role="tooltip" aria-live="polite">
+                            <div class="slds-popover__body slds-text-longform">
+                                <p>Wybierz potencjalną stopę zwrotu z inwestycji w okresie wpłat. Pamiętaj, że wyższe stopy zwrotu z funduszy wiążą się zazwyczaj z wyższym ryzykiem inwestycji.</p>
+                            </div>
+                        </div>
+                        <div class="slds-form-element__label">
+                            <label class="slds-form-element__label" for="profit">Oczekiwany roczny zysk</label>
+                        </div>
+                        <div class="slds-form-element__icon">
+                            <a id="profit_help_btn" onclick="{!c.handleHelp}">
+                                <div class="slds-icon-text-default" aria-hidden="true">
+                                    <lightning:icon size="x-small" title="Help" iconName="utility:info" />
+                                </div>
+                            </a>
+                        </div>
+                        <div class="slds-form-element__control">
+                            <div class="slds-form-element__control slds-input-has-fixed-addon">
+                                <ui:inputNumber aura:id="profit" value="{!v.profit}" />
+                                <span class="slds-form-element__addon">%</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="slds-form-element">
+                        <ui:button label="Oblicz" 
+                                   class="slds-button slds-button--brand"
+                                   press="{!c.handleCalc}"/>
+                    </div>
+                    
+                </form>
+                
+            </fieldset>
+            <!-- / BOXED AREA -->
+        </div>
+        <div aria-labelledby="newexpenseform" aura:id="resultForm" class="slds-hide">
+            <div class="slds-tile slds-tile--board">
+                <h3 class="slds-truncate" title="Anypoint Connectors">Twoja emerytura</h3>
+                <div class="slds-tile__detail slds-text-body--small">
+                    <p class="slds-text-heading--medium">{!v.result} zł</p>
+                </div>
+                <h3 class="slds-truncate slds-m-top--medium" title="Anypoint Connectors">Suma wpłat</h3>
+                <div class="slds-tile__detail slds-text-body--small">
+                    <p class="slds-text-heading--medium">{!v.capital} zł</p>
+                </div>
+            </div>
+            <ui:button label="Zmień dane" 
+                       class="slds-button slds-button--brand slds-m-top--medium"
+                       press="{!c.handleBack}"/>
+        </div>
+    </div>
+</aura:component>
